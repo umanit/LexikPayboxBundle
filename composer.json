@@ -7,7 +7,7 @@
     "license": "MIT",
     "authors": [
         { "name": "Lexik", "email": "dev@lexik.fr" },
-        { "name": "Olivier Maisonneuve", "email": "o.maisonneuve@lexik.fr" }
+        { "name": "Olivier Maisonneuve", "email": "o.maisonneuve@lexik.fr" },
         { "name": "Vincent Robic", "email": "vrobic@umanit.fr" }
     ],
     "require": {
