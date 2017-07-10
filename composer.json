@@ -1,13 +1,14 @@
 {
-    "name": "lexik/paybox-bundle",
+    "name": "umanit/paybox-bundle",
     "type": "symfony-bundle",
     "description": "LexikPayboxBundle eases the implementation of the Paybox payment system.",
     "keywords": ["Symfony2", "bundle", "Paybox", "Payment"],
-    "homepage": "https://github.com/lexik/LexikPayboxBundle",
+    "homepage": "https://github.com/umanit/LexikPayboxBundle",
     "license": "MIT",
     "authors": [
         { "name": "Lexik", "email": "dev@lexik.fr" },
-        { "name": "Olivier Maisonneuve", "email": "o.maisonneuve@lexik.fr" }
+        { "name": "Olivier Maisonneuve", "email": "o.maisonneuve@lexik.fr" },
+        { "name": "Vincent Robic", "email": "vrobic@umanit.fr" }
     ],
     "require": {
         "php": ">=5.3.2",

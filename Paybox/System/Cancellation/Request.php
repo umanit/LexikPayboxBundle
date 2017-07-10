@@ -39,16 +39,23 @@ class Request extends AbstractRequest
      */
     protected function initGlobals(array $parameters)
     {
-        $this->globals = array(
-            'production'          => isset($parameters['production']) ? $parameters['production'] : false,
-            'currencies'          => $parameters['currencies'],
-            'site'                => $parameters['site'],
-            'rank'                => $parameters['rank'],
-            'login'               => $parameters['login'],
-            'hmac_key'            => $parameters['hmac']['key'],
-            'hmac_algorithm'      => $parameters['hmac']['algorithm'],
-            'hmac_signature_name' => $parameters['hmac']['signature_name'],
-        );
+        $context = $this->getContext();
+
+        if ($context !== null && isset($parameters[$context])) {
+
+            $parameters = $parameters[$context];
+
+            $this->globals = array(
+                'production'          => isset($parameters['production']) ? $parameters['production'] : false,
+                'currencies'          => $parameters['currencies'],
+                'site'                => $parameters['site'],
+                'rank'                => $parameters['rank'],
+                'login'               => $parameters['login'],
+                'hmac_key'            => $parameters['hmac']['key'],
+                'hmac_algorithm'      => $parameters['hmac']['algorithm'],
+                'hmac_signature_name' => $parameters['hmac']['signature_name'],
+            );
+        }
     }
 
     /**

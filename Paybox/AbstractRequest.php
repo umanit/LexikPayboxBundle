@@ -17,6 +17,20 @@ use Symfony\Component\DependencyInjection\Exception\RuntimeException;
 abstract class AbstractRequest implements RequestInterface
 {
     /**
+     * Context.
+     *
+     * @var string
+     */
+    protected $context;
+
+    /**
+     * Array of the transaction's raw parameters.
+     *
+     * @var array
+     */
+    protected $rawParameters;
+
+    /**
      * Array of the transaction's parameters.
      *
      * @var array
@@ -45,12 +59,11 @@ abstract class AbstractRequest implements RequestInterface
      */
     public function __construct(array $parameters, array $servers)
     {
-        $this->parameters = array();
-        $this->globals    = array();
-        $this->servers    = $servers;
-
-        $this->initGlobals($parameters);
-        $this->initParameters();
+        $this->context       = null;
+        $this->rawParameters = $parameters;
+        $this->parameters    = array();
+        $this->globals       = array();
+        $this->servers       = $servers;
     }
 
     /**
@@ -64,6 +77,68 @@ abstract class AbstractRequest implements RequestInterface
      * Initialize defaults parameters with globals.
      */
     abstract protected function initParameters();
+
+    /**
+     * Sets the context that defines globals and parameters.
+     *
+     * This must be called when implementing Paybox.
+     *
+     * @param  string $context
+     *
+     * @return RequestInterface
+     */
+    public function setContext($context)
+    {
+        $rawParameters = $this->getRawParameters();
+
+        if ($context === null) {
+            throw new \Exception('Request context is undefined.');
+        } elseif (!isset($rawParameters[$context])) {
+            throw new \Exception(sprintf('Request context %s is not configured.', $context));
+        }
+
+        $this->context = $context;
+
+        // Context has changed, reload globals and parameters
+        $this->initGlobals($rawParameters);
+        $this->initParameters();
+
+        return $this;
+    }
+
+    /**
+     * Returns the context.
+     *
+     * @return RequestInterface
+     */
+    public function getContext()
+    {
+        return $this->context;
+    }
+
+    /**
+     * Sets a bunch of raw parameters.
+     *
+     * @param  array $rawParameters
+     *
+     * @return RequestInterface
+     */
+    public function setRawParameters($rawParameters)
+    {
+        $this->rawParameters = $rawParameters;
+
+        return $this;
+    }
+
+    /**
+     * Returns all raw parameters set for a payment.
+     *
+     * @return array
+     */
+    public function getRawParameters()
+    {
+        return $this->rawParameters;
+    }
 
     /**
      * {@inheritdoc}

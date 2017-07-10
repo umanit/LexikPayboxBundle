@@ -27,30 +27,32 @@ class Configuration implements ConfigurationInterface
 
                 ->arrayNode('parameters')
                     ->isRequired()
-                    ->children()
-                        ->scalarNode('production')->defaultValue(false)->end()
-                        ->arrayNode('currencies')
-                            ->defaultValue(array(
-                                '036', // AUD
-                                '124', // CAD
-                                '756', // CHF
-                                '826', // GBP
-                                '840', // USD
-                                '978', // EUR
-                            ))
-                            ->prototype('scalar')->end()
-                        ->end()
-                        ->scalarNode('site')->isRequired()->end()
-                        ->scalarNode('rank')->defaultValue(null)->end()
-                        ->scalarNode('rang')->defaultValue(null)->end()
-                        ->scalarNode('login')->defaultValue(null)->end()
-                        ->scalarNode('cle')->defaultValue(null)->end()
-                        ->arrayNode('hmac')
-                            ->isRequired()
-                            ->children()
-                                ->scalarNode('algorithm')->defaultValue('sha512')->end()
-                                ->scalarNode('key')->isRequired()->end()
-                                ->scalarNode('signature_name')->defaultValue('Sign')->end()
+                    ->prototype('array')
+                        ->children()
+                            ->scalarNode('production')->defaultValue(false)->end()
+                            ->arrayNode('currencies')
+                                ->defaultValue(array(
+                                    '036', // AUD
+                                    '124', // CAD
+                                    '756', // CHF
+                                    '826', // GBP
+                                    '840', // USD
+                                    '978', // EUR
+                                ))
+                                ->prototype('scalar')->end()
+                            ->end()
+                            ->scalarNode('site')->isRequired()->end()
+                            ->scalarNode('rank')->defaultValue(null)->end()
+                            ->scalarNode('rang')->defaultValue(null)->end()
+                            ->scalarNode('login')->defaultValue(null)->end()
+                            ->scalarNode('cle')->defaultValue(null)->end()
+                            ->arrayNode('hmac')
+                                ->isRequired()
+                                ->children()
+                                    ->scalarNode('algorithm')->defaultValue('sha512')->end()
+                                    ->scalarNode('key')->isRequired()->end()
+                                    ->scalarNode('signature_name')->defaultValue('Sign')->end()
+                                ->end()
                             ->end()
                         ->end()
                     ->end()

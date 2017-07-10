@@ -1,12 +1,8 @@
 LexikPayboxBundle
 =================
 
-[![Build Status](https://scrutinizer-ci.com/g/lexik/LexikPayboxBundle/badges/build.png?b=refactoring)](https://scrutinizer-ci.com/g/lexik/LexikPayboxBundle/build-status/master)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/lexik/LexikPayboxBundle/badges/quality-score.png?b=refactoring)](https://scrutinizer-ci.com/g/lexik/LexikPayboxBundle/?branch=master)
-[![SensioLabsInsight](https://insight.sensiolabs.com/projects/378718a0-ea77-4592-89eb-9bf47214efc9/mini.png)](https://insight.sensiolabs.com/projects/378718a0-ea77-4592-89eb-9bf47214efc9)
-[![Latest Stable Version](https://poser.pugx.org/lexik/paybox-bundle/v/stable.svg)](https://packagist.org/packages/lexik/paybox-bundle)
-
-LexikPayboxBundle makes the use of [Paybox](http://www.paybox.com) payment system easier by doing all the boring things for you.
+This bundle has been forked from lexik/LexikPayboxBundle v1.1.0 to handle configuration contexts
+and make it possible to use multiple bank accounts.
 
 LexikPayboxBundle silently does :
  * hmac hash calculation of parameters during request.
@@ -16,6 +12,11 @@ LexikPayboxBundle silently does :
 
 You only need to provide parameters of your transaction, customize the response page
 and wait for the event triggered on ipn response.
+
+Important!
+----------
+
+If you do not need to use multiple bank accounts or want to use the latest version, please use lexik/LexikPayboxBundle.
 
 Requirements
 ------------
@@ -60,12 +61,13 @@ Your personnal account informations must be set in your config.yml
 # Lexik Paybox Bundle
 lexik_paybox:
     parameters:
-        productions: false
-        site:        '9999999'   # Site number provided by the bank
-        rank:        '99'        # Rank number provided by the bank
-        login:       '999999999' # Customer's login provided by Paybox
-        hmac:
-            key: '01234...BCDEF' # Key used to compute the hmac hash, provided by Paybox
+        something: # A configuration context to manage multiple parameters sets
+            production: false
+            site:       '9999999'   # Site number provided by the bank
+            rank:       '99'        # Rank number provided by the bank
+            login:      '999999999' # Customer's login provided by Paybox
+            hmac:
+                key: '01234...BCDEF' # Key used to compute the hmac hash, provided by Paybox
 ```
 
 Additional configuration:
@@ -73,16 +75,17 @@ Additional configuration:
 ```yml
 lexik_paybox:
     parameters:
-        currencies:  # Optionnal parameters, this is the default value
-            - '036'  # AUD
-            - '124'  # CAD
-            - '756'  # CHF
-            - '826'  # GBP
-            - '840'  # USD
-            - '978'  # EUR
-        hmac:
-            algorithm:      sha512 # signature algorithm
-            signature_name: Sign   # customize the signature parameter name
+        something:
+            currencies:  # Optional parameters, this is the default value
+                - '036'  # AUD
+                - '124'  # CAD
+                - '756'  # CHF
+                - '826'  # GBP
+                - '840'  # USD
+                - '978'  # EUR
+            hmac:
+                algorithm:      sha512 # signature algorithm
+                signature_name: Sign   # customize the signature parameter name
 ```
 
 The routing collection must be set in your routing.yml
@@ -107,6 +110,7 @@ The bundle includes a sample controller `SampleController.php` with two actions.
 public function callAction()
 {
     $paybox = $this->get('lexik_paybox.request_handler');
+    $paybox->setContext('something'); // The configuration context to use
     $paybox->setParameters(array(
         'PBX_CMD'          => 'CMD'.time(),
         'PBX_DEVISE'       => '978',

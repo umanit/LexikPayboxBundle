@@ -44,15 +44,14 @@ class Request extends AbstractRequest
      */
     public function __construct(array $parameters, array $servers, LoggerInterface $logger, EventDispatcherInterface $dispatcher, TransportInterface $transport)
     {
+        $this->context    = null;
+        $this->rawParameters = $parameters;
         $this->parameters = array();
         $this->globals    = array();
         $this->servers    = $servers['direct_plus'];
         $this->logger     = $logger;
         $this->dispatcher = $dispatcher;
         $this->transport  = $transport;
-
-        $this->initGlobals($parameters);
-        $this->initParameters();
     }
 
     /**
@@ -62,13 +61,20 @@ class Request extends AbstractRequest
      */
     protected function initGlobals(array $parameters)
     {
-        $this->globals = array(
-            'production' => isset($parameters['production']) ? $parameters['production'] : false,
-            'currencies' => $parameters['currencies'],
-            'site'       => $parameters['site'],
-            'rang'       => $parameters['rang'],
-            'cle'        => $parameters['cle'],
-        );
+        $context = $this->getContext();
+
+        if ($context !== null && isset($parameters[$context])) {
+
+            $parameters = $parameters[$context];
+
+            $this->globals = array(
+                'production' => isset($parameters['production']) ? $parameters['production'] : false,
+                'currencies' => $parameters['currencies'],
+                'site'       => $parameters['site'],
+                'rang'       => $parameters['rang'],
+                'cle'        => $parameters['cle'],
+            );
+        }
     }
 
     /**
