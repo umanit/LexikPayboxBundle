@@ -21,6 +21,13 @@ use Symfony\Component\HttpFoundation\Request as HttpRequest;
 class Response
 {
     /**
+     * Context.
+     *
+     * @var string
+     */
+    protected $context;
+
+    /**
      * @var HttpRequest
      */
     private $request;
@@ -60,10 +67,48 @@ class Response
      */
     public function __construct(HttpRequest $request, LoggerInterface $logger, EventDispatcherInterface $dispatcher, array $parameters)
     {
-        $this->request    = $request;
-        $this->logger     = $logger;
-        $this->dispatcher = $dispatcher;
-        $this->parameters = $parameters;
+        $this->request       = $request;
+        $this->context       = null;
+        $this->logger        = $logger;
+        $this->dispatcher    = $dispatcher;
+        $this->parameters    = $parameters;
+    }
+
+    /**
+     * Sets the context that defines parameters.
+     *
+     * This must be called when implementing Paybox.
+     *
+     * @param  string $context
+     *
+     * @return Response
+     */
+    public function setContext($context)
+    {
+        if ($context === null) {
+            throw new \Exception('Response context is undefined.');
+        } elseif (!isset($this->parameters[$context])) {
+            throw new \Exception(sprintf('Response context %s is not configured.', $context));
+        }
+
+        $this->context = $context;
+
+        if ($context !== null && isset($this->parameters[$context])) {
+            $publicKey = $this->parameters['public_key']; // The public key has been appended by the configuration loader
+            $this->parameters = array_merge($this->parameters[$context], ['public_key' => $publicKey]);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Returns the context.
+     *
+     * @return Response
+     */
+    public function getContext()
+    {
+        return $this->context;
     }
 
     /**
